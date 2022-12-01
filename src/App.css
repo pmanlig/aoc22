@@ -87,7 +87,6 @@
 	text-align: left;
 	display: flex;
 	flex-direction: column;
-	max-width: 25vw;
 	max-height: calc(94vh - 40px);
 }
 
@@ -102,12 +101,18 @@
 	flex-grow: 1;
 }
 
-.App-solution>.solver {
+.App-solution .solver {
 	margin: 5px;
+	padding: 5px;
 	border: 1px solid black;
 	flex-grow: 1;
+	overflow-y: auto;
 }
 
-.App-solution>.solver>p {
+.App-solution .solver p {
 	margin: 0;
+}
+
+.App-solution .solver canvas {
+	border: 1px solid red;
 }

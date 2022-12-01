@@ -1,4 +1,3 @@
-import './Solvers.css';
 import React from 'react';
 
 class BaseSolver extends React.Component {
@@ -7,7 +6,7 @@ class BaseSolver extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { solution: null, error: null }
+		this.state = { input: props.input, solution: null, error: null }
 	}
 
 	backgroundProcess = () => {
@@ -30,11 +29,19 @@ class BaseSolver extends React.Component {
 	}
 
 	componentDidMount() {
+		this.initializeSolution();
+	}
+
+	componentWillUnmount() {
+		this.clearSolution();
+	}
+
+	initializeSolution() {
 		if (this.setup) { this.setup(this.props.input); }
 		this.runBackground(this.backgroundProcess);
 	}
 
-	componentWillUnmount() {
+	clearSolution() {
 		if (null !== this.idleCallback) {
 			cancelIdleCallback(this.idleCallback);
 			this.idleCallback = null;
@@ -46,6 +53,14 @@ class BaseSolver extends React.Component {
 	}
 
 	solution = () => {
+		if (this.props.input !== this.state.input) {
+			if (this.newInputTimeout) { clearTimeout(this.newInputTimeout); }
+			this.newInputTimeout = setTimeout(() => {
+				this.clearSolution();
+				this.initializeSolution();
+				this.setState({ input: this.props.input, solution: null, error: null });
+			}, 100);
+		}
 		if (this.state.solution) { return this.state.solution.toString().split('\n').map((t, i) => <p key={i}>{t}</p>); }
 		if (!this.props.input) { return <p>Inget indata!</p> }
 		return null;
@@ -65,22 +80,19 @@ class BaseSolver extends React.Component {
 export default class GraphSolver extends BaseSolver {
 	constructor(props) {
 		super(props);
-		this.canvas = React.createRef();
-		if (this.state === undefined) { this.state = {}; }
-		this.state.width = 1000;
-		this.state.height = 500;
+		this.canvasRef = React.createRef();
 	}
 
 	getCanvas() {
-		return this.canvas.current.getContext('2d');
+		return this.canvasRef.current.getContext('2d');
 	}
 
 	render() {
-		let { width, height, error } = this.state;
+		let { error } = this.state;
 		try {
 			return <div className="solver">
 				{error ? <div>Error: {error.toString()}</div> : this.solution()}
-				<canvas id="canvas" ref={this.canvas} width={width} height={height} />
+				{this.canvas && <canvas id="canvas" ref={this.canvasRef} style={{ width: this.canvas.width, height: this.canvas.height }} />}
 			</div>
 		} catch (e) {
 			return <div className="solver">Error: {e.toString()}</div>;
