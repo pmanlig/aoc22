@@ -28,16 +28,16 @@ class Solution extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { input: null };
-		this.loadInput(props.day);
+		this.loadInput();
 	}
 
-	loadInput(day) {
-		if (day) {
-			fetch(`${day}.txt`)
+	loadInput() {
+		if (this.props.day) {
+			fetch(`${this.props.day}.txt`)
 				.then(res => res.text())
 				.then(txt => {
 					if (!txt.startsWith("<!DOCTYPE html>")) {
-						this.setState({ input: txt.replace(/\r/gm, '') });
+						this.setState({ input: txt.replace(/\r/gm, ''), day: this.props.day });
 					}
 				})
 				.catch();
@@ -45,7 +45,8 @@ class Solution extends React.Component {
 	}
 
 	render() {
-		let { input } = this.state;
+		let { input, day } = this.state;
+		if (this.props.day !== day) { this.loadInput() }
 		const Solver = this.props.solver;
 		return <div className="App-solution">
 			<Input value={input} onChange={e => this.setState({ input: e.target.value })} />
