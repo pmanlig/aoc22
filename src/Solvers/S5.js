@@ -18,19 +18,10 @@ export class S5 extends Solver {
 	}
 
 	stacksFromCrates(crates) {
-		let stacks = [null];
+		let stacks = [], n = 1;
 		for (let i = 0; i < crates[0].length; i++) {
-			if (crates[0][i] !== ' ') stacks.push([]);
-		}
-		for (let y = 1; y < crates.length; y++) {
-			let s = 1;
-			for (let x = 0; x < crates[y].length;) {
-				x++;
-				if (crates[y][x] !== ' ') { stacks[s].push(crates[y][x]); }
-				s++;
-				x++;
-				x++;
-				x++;
+			if (crates[0][i] !== ' ') {
+				stacks[n++] = crates.slice(1).map(s => s[i]).filter(c => c !== ' ');
 			}
 		}
 		return stacks;
