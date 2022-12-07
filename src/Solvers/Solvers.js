@@ -10,7 +10,7 @@ class BaseSolver extends React.Component {
 	}
 
 	backgroundProcess = () => {
-		if (this.solve) {
+		if (this.solve && this.props.input !== null) {
 			let result = this.solve(this.props.input);
 			if (result) {
 				this.setState(result);
