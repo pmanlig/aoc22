@@ -1,4 +1,5 @@
 import React from 'react';
+import { Bitmap } from '../util';
 
 class BaseSolver extends React.Component {
 	idleCallback = null;
@@ -88,11 +89,12 @@ export default class GraphSolver extends BaseSolver {
 	}
 
 	render() {
-		let { error } = this.state;
+		let { error, bmp, styles, canvas } = this.state;
 		try {
 			return <div className="solver">
 				{error ? <div>Error: {error.toString()}</div> : this.solution()}
 				{this.canvas && <canvas id="canvas" ref={this.canvasRef} style={{ width: this.canvas.width, height: this.canvas.height }} />}
+				{bmp && <Bitmap data={bmp} styles={styles} width={canvas.width} height={canvas.height} pixelSize={canvas.pixel} />}
 			</div>
 		} catch (e) {
 			return <div className="solver">Error: {e.toString()}</div>;

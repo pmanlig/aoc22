@@ -114,5 +114,5 @@
 }
 
 .App-solution .solver canvas {
-	border: 1px solid red;
+	margin-top: 5px;
 }
