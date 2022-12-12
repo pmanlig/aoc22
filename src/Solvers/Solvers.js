@@ -11,7 +11,7 @@ class BaseSolver extends React.Component {
 	}
 
 	backgroundProcess = () => {
-		if (this.solve && this.props.input !== null) {
+		if (this.solve && this.props.input) {
 			let result = this.solve(this.props.input);
 			if (result) {
 				this.setState(result);
@@ -89,12 +89,12 @@ export default class GraphSolver extends BaseSolver {
 	}
 
 	render() {
-		let { error, bmp, styles, canvas } = this.state;
+		let { error, bmp, renderer } = this.state;
 		try {
 			return <div className="solver">
 				{error ? <div>Error: {error.toString()}</div> : this.solution()}
 				{this.canvas && <canvas id="canvas" ref={this.canvasRef} style={{ width: this.canvas.width, height: this.canvas.height }} />}
-				{bmp && <Bitmap data={bmp} styles={styles} width={canvas.width} height={canvas.height} pixelSize={canvas.pixel} />}
+				{bmp && <Bitmap data={bmp} renderer={renderer} />}
 			</div>
 		} catch (e) {
 			return <div className="solver">Error: {e.toString()}</div>;
