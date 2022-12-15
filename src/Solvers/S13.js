@@ -49,6 +49,7 @@ export class S13 extends Solver {
 		input = input.split('\n\n');
 		let packets = input.map(p => p.split('\n').map(i => this.parseList(i)));
 		let sum = 0;
+		console.log(packets.map(p => this.validate(p)).join('\n'));
 		for (let i = 0; i < packets.length; i++) {
 			if (this.validate(packets[i])) { sum += i + 1; }
 		}

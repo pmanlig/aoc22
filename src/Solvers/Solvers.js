@@ -38,7 +38,7 @@ class BaseSolver extends React.Component {
 	}
 
 	initializeSolution() {
-		if (this.setup) { this.setup(this.props.input); }
+		if (this.setup && this.props.input) { this.setup(this.props.input); }
 		this.runBackground(this.backgroundProcess);
 	}
 
