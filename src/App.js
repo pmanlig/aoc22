@@ -46,7 +46,7 @@ class Solution extends React.Component {
 
 	render() {
 		let { input, day } = this.state;
-		if (this.props.day !== day) { this.loadInput() }
+		if (this.props.day !== day) { input = undefined; this.loadInput() }
 		const Solver = this.props.solver;
 		return <div className="App-solution">
 			<Input value={input} onChange={e => this.setState({ input: e.target.value })} />

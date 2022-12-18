@@ -7,7 +7,7 @@ class BaseSolver extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { input: props.input, solution: null, error: null }
+		this.state = { input: null, solution: null, error: null }
 	}
 
 	backgroundProcess = () => {
@@ -29,16 +29,33 @@ class BaseSolver extends React.Component {
 		}
 	}
 
+	updateInput() {
+		if (this.state.input !== this.props.input) {
+			if (this.newInputTimeout) { clearTimeout(this.newInputTimeout); }
+			this.newInputTimeout = setTimeout(() => {
+				this.setState({ input: this.props.input, solution: null, error: null });
+				this.clearSolution();
+				this.initializeSolution();
+			}, 500);
+		}
+	}
+
 	componentDidMount() {
-		this.initializeSolution();
+		this.updateInput();
 	}
 
 	componentWillUnmount() {
 		this.clearSolution();
 	}
 
+	componentDidUpdate() {
+		this.updateInput();
+	}
+
 	initializeSolution() {
-		if (this.setup && this.props.input) { this.setup(this.props.input); }
+		if (this.setup && this.state.input) {
+			this.setup(this.state.input);
+		}
 		this.runBackground(this.backgroundProcess);
 	}
 
@@ -54,14 +71,6 @@ class BaseSolver extends React.Component {
 	}
 
 	solution = () => {
-		if (this.props.input !== this.state.input) {
-			if (this.newInputTimeout) { clearTimeout(this.newInputTimeout); }
-			this.newInputTimeout = setTimeout(() => {
-				this.clearSolution();
-				this.initializeSolution();
-				this.setState({ input: this.props.input, solution: null, error: null });
-			}, 100);
-		}
 		if (this.state.solution) { return this.state.solution.toString().split('\n').map((t, i) => <p key={i}>{t}</p>); }
 		if (!this.props.input) { return <p>Inget indata!</p> }
 		return null;
