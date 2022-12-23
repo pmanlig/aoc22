@@ -112,33 +112,34 @@ class Position {
 	moveCube(board, cube) {
 		let d = directions[this.dir];
 		let n = { x: this.x, y: this.y };
+		let newDir = this.dir;
 		n.x += d.x;
 		n.y += d.y;
 		if (n.y < 0 || n.y >= board.length || n.x < 0 || n.x >= board[n.y].length || board[n.y][n.x] === ' ') {
 			n.x = (n.x + cube.dimension) % cube.dimension;
 			n.y = (n.y + cube.dimension) % cube.dimension;
 			let side = cube.findSide(this);
-			console.log(this, side, n);
 			let rotation = (4 - side.rotation) % 4;
-			this.dir = (this.dir + rotation) % 4;
+			newDir = (newDir + rotation) % 4;
 			n = cube.rotate(n, rotation);
-			console.log(n, rotation);
-			let newSide = cube.sides.find(s => s.num === cubeSides[side.num][this.dir]);
-			rotation = 0;
-			if (side.num === 5) { rotation = 3 * (newSide.num - 1); }
-			if (newSide.num === 5) { rotation = 3 * (side.num - 1); }
-			if (side.num === 6) { rotation = newSide.num - 1; }
-			if (newSide.num === 6) { rotation = side.num - 1; }
-			this.dir = (this.dir + rotation) % 4;
+			let newSide = cube.sides.find(s => s.num === cubeSides[side.num][newDir]);
+			rotation = newSide.rotation;
+			if (side.num === 5) { rotation += 3 * (newSide.num - 1); }
+			if (newSide.num === 5) { rotation += side.num - 1; }
+			if (side.num === 6) { rotation += newSide.num - 1; }
+			if (newSide.num === 6) { rotation += 3 * (side.num - 1); }
+			rotation = rotation % 4;
+			newDir = (newDir + rotation) % 4;
 			n = cube.rotate(n, rotation);
-			console.log(n);
 			n.x += newSide.x;
 			n.y += newSide.y;
-			console.log(newSide, n);
+			// console.log(`From: {x: ${this.x}, y:${this.y}, side: ${side.num}, dir: ${this.dir}}`);
+			// console.log(`To: {x: ${n.x}, y:${n.y}, side: ${newSide.num}, dir: ${newDir}}`);
 		}
 		if (board[n.y][n.x] === '#') { return false; }
 		this.x = n.x;
 		this.y = n.y;
+		this.dir = newDir;
 		this.path.push({ x: this.x, y: this.y });
 		return true;
 	}
@@ -208,8 +209,9 @@ export class S22 extends Solver {
 	}
 
 	solve() {
-		if (this.distances.length > 1998) {
-			for (let i = 0; i < 1 && this.distances.length > 0; i++) {
+		let limit = 0;
+		if (this.distances.length > limit) {
+			for (let i = 0; i < 20 && this.distances.length > limit; i++) {
 				let dist = this.distances.pop();
 				while (dist-- > 0) {
 					this.position.move(this.board);
@@ -226,6 +228,4 @@ export class S22 extends Solver {
 			return { solution: `Password: ${this.position.password()}\nCube password: ${this.cubePosition.password()}`, bmp: this.board };
 		}
 	}
-
-	// Too high: 141232
 }

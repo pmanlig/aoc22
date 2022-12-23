@@ -95,14 +95,14 @@ export class S23 extends Solver {
 		// input = "....#..\n..###.#\n#...#.#\n.#...##\n#.###..\n##.#.##\n.#..#..";
 		input = input.split('\n').map(l => l.split(''));
 		this.elves = this.createElves(input);
-		let offset = 20;
+		let offset = 70;
 		this.i = 0;
-		let renderer = new ElfRenderer(input[0].length + 2 * offset, input.length + 2 * offset, 3, { x: offset, y: offset });
+		let renderer = new ElfRenderer(input[0].length + 2 * offset, input.length + 2 * offset, 2, { x: offset, y: offset });
 		this.setState({ solution: "Workning...", bmp: this.elves, renderer: renderer });
 	}
 
 	solve() {
-		for (let i = 0; i < 10 && this.elves.some(e => e.propose !== null); i++) {
+		for (let i = 0; i < 1 && this.elves.some(e => e.propose !== null); i++) {
 			this.elves.forEach(e => e.calculate(this.elves, this.i));
 			this.elves.forEach(e => e.move(this.elves));
 			this.i++;
